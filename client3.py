@@ -44,13 +44,10 @@ def getRatio(price_a, price_b):
     """ Get ratio of price_a and price_b """
     """ ------------- Update this function ------------- """
     try:
-        ratio = price_a / price_b
-        
-        
+        ratio = price_a / price_b         
     except ZeroDivisionError:
         print("Division by zero error")
         return None
-
     return round(ratio, 5)
 
 
