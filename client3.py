@@ -21,6 +21,7 @@
 import json
 import random
 import urllib.request
+from statistics import mean
 
 # Server API URLs
 QUERY = "http://localhost:8080/query?id={}"
@@ -35,14 +36,22 @@ def getDataPoint(quote):
     stock = quote['stock']
     bid_price = float(quote['top_bid']['price'])
     ask_price = float(quote['top_ask']['price'])
-    price = bid_price
-    return stock, bid_price, ask_price, price
+    price = mean([bid_price, ask_price])
+    return stock, bid_price, ask_price, round(price,6)
 
 
 def getRatio(price_a, price_b):
     """ Get ratio of price_a and price_b """
     """ ------------- Update this function ------------- """
-    return 1
+    try:
+        ratio = price_a / price_b
+        
+        
+    except ZeroDivisionError:
+        print("Division by zero error")
+        return None
+
+    return round(ratio, 5)
 
 
 # Main
@@ -52,8 +61,10 @@ if __name__ == "__main__":
         quotes = json.loads(urllib.request.urlopen(QUERY.format(random.random())).read())
 
         """ ----------- Update to get the ratio --------------- """
+        prices = {}
         for quote in quotes:
             stock, bid_price, ask_price, price = getDataPoint(quote)
+            prices[stock] = price
             print("Quoted %s at (bid:%s, ask:%s, price:%s)" % (stock, bid_price, ask_price, price))
 
-        print("Ratio %s" % getRatio(price, price))
+        print("Ratio %s" % round(getRatio(prices["ABC"], prices["DEF"]),5))
